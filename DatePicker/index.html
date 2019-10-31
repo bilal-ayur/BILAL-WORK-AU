@@ -1,0 +1,97 @@
+<html>
+  <head>
+    <title>Pickadate Tutorial</title>
+    <meta name="author" content="https://github.com/amsul/pickadate.js" />
+    <!-- CSS -->
+    <link rel="stylesheet" href="default.css" />
+    <link rel="stylesheet" href="default.date.css" />
+
+    <!-- JS -->
+    <script src="jquery-3.4.1.js"></script>
+    <script src="picker.js"></script>
+    <script src="picker.date.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <input type="text" id="calendar" />
+    </div>
+
+    <script>
+      var available_date_range = {
+        from: [2019, 9, 10],
+        to: [2019, 9, 25]
+      };
+
+      /**
+       * List all dates to be shown to
+       * end user
+       */
+
+      var list_available_dates = [
+        new Date(2019, 9, 10),
+        new Date(2019, 9, 11),
+        new Date(2019, 9, 12),
+        new Date(2019, 9, 13),
+        new Date(2019, 9, 14),
+        new Date(2019, 9, 16)
+      ];
+
+      //Dates which should be blocked
+      var blocked_dates = [new Date(2019, 9, 11), new Date(2019, 9, 12)];
+
+      //List of released dates for end users
+      var list_released_date = list_available_dates.filter(function(elem) {
+        //to compare date we need to serialize the date, hence +elem
+        //map serializes date as integer
+        if (blocked_dates.map(Number).indexOf(+elem) == -1) {
+          return true;
+        }
+        return false;
+      });
+
+
+      var $input = $("#calendar").pickadate({
+        format: "dd-mm-yyyy"
+        
+      });
+
+      // Using picker object directly
+      var picker = $input.pickadate("picker");
+      console.log(picker.get("disable"));
+
+      /**
+       * This is reverse logic.
+       * All available dates will be disabled initially, later
+       * flip the results (i,e enable only disabled dates)
+       */
+      console.log("Released dates : " + list_available_dates);
+      list_released_date.forEach(function(date) {
+        console.log("Date : " + date);
+        picker.set("disable", Array(date));
+      });
+
+      picker.set("disable", "flip");
+
+      /**
+       * Helper Hooks releated to picker
+       */
+      picker.on({
+        open: function() {
+          console.log("Opened up!");
+        },
+        close: function() {
+          console.log("Closed now");
+        },
+        render: function() {
+          console.log("Just rendered anew");
+        },
+        stop: function() {
+          console.log("See ya");
+        },
+        set: function(thingSet) {
+          console.log("Set stuff:", thingSet);
+        }
+      });
+    </script>
+  </body>
+</html>
